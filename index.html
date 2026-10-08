@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b1220">
+<title>World Market Clock Mobile</title>
+<style>
+:root{--bg:#0b1220;--panel:#111b2c;--panel2:#172235;--text:#f4f7fb;--muted:#91a4bd;--line:#29384d;--green:#33d17a;--red:#ff5d68;--amber:#ffc857}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-text-size-adjust:100%}body{padding:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}.app{max-width:520px;margin:auto}.card{background:var(--panel);border:1px solid #24334a;border-radius:16px;padding:14px}header{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:10px}h1{font-size:18px;margin:0}.utc{text-align:right}.utc strong{font-size:19px}.date,.small{font-size:12px;color:var(--muted)}.section{margin-top:14px}.section-title{font-size:11px;letter-spacing:1.2px;color:var(--muted);font-weight:800;margin-bottom:7px}.timeline-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#0d1625;padding:8px}.timeline{position:relative;min-width:520px;height:150px;padding-top:22px}.axis{position:absolute;top:2px;left:0;right:0;display:flex;justify-content:space-between;color:var(--muted);font-size:9px}.bar{height:20px;position:relative;margin:5px 0;background:#22314a;border-radius:5px;overflow:hidden}.fill{position:absolute;height:100%;background:#315f91;border-radius:5px}.bar span{position:absolute;left:6px;top:3px;font-size:10px;z-index:2}.now{position:absolute;top:18px;bottom:0;width:2px;background:var(--red);z-index:4}.now:after{content:"NOW";position:absolute;top:-16px;left:4px;color:var(--red);font-size:9px;font-weight:800}.city{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 11px;margin:5px 0;background:var(--panel2);border-radius:11px;border-left:3px solid transparent}.city.active{border-left-color:var(--green);background:#162b2b}.name{font-size:15px;font-weight:700}.time{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}.status{text-align:right;font-size:11px;font-weight:800;min-width:112px}.open{color:var(--green)}.closed{color:var(--muted)}.count{font-size:10px;font-weight:600;color:var(--amber);margin-top:3px}.next,.windows{margin-top:12px;background:#0d1625;border:1px solid var(--line);border-radius:12px;padding:11px}.nextrow{display:flex;justify-content:space-between;gap:10px}.next strong{color:var(--amber);font-size:16px}.pocket{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.pill{padding:6px 8px;border-radius:14px;background:#203047;font-size:11px;color:#bfd0e5}.note{font-size:11px;color:var(--muted);margin-top:6px}@media(max-width:390px){.card{padding:11px}.time{font-size:18px}.status{min-width:102px}}
+</style>
+</head>
+<body><div class="app"><div class="card">
+<header><div><h1>WORLD MARKETS</h1><div class="date" id="localDate"></div></div><div class="utc"><strong id="utcClock">--:--:--</strong><div class="small">UTC</div></div></header>
+<div class="section"><div class="section-title">MARKET TIMELINE — UTC</div><div class="timeline-wrap"><div class="timeline"><div class="axis"><span>00</span><span>03</span><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span><span>21</span><span>24</span></div><div class="now" id="nowLine"></div><div class="bar"><div class="fill" id="sydneyBar"></div><span>Sydney</span></div><div class="bar"><div class="fill" id="tokyoBar"></div><span>Tokyo</span></div><div class="bar"><div class="fill" id="hkBar"></div><span>Hong Kong</span></div><div class="bar"><div class="fill" id="londonBar"></div><span>London</span></div><div class="bar"><div class="fill" id="nyBar"></div><span>New York</span></div></div></div><div class="note">Swipe the timeline left/right if needed.</div></div>
+<div id="cities"></div>
+<div class="next"><div class="section-title">NEXT MARKET OPEN</div><div class="nextrow"><strong id="nextMarket">—</strong><span id="nextCountdown">—</span></div></div>
+<div class="windows"><div class="section-title">NY TRADING WINDOWS</div><div><b>AM</b> 09:30–11:00 &nbsp; <b>PM</b> 13:30–15:45 ET</div><div class="pocket"><span class="pill">09:33–09:37</span><span class="pill">09:43–09:47</span><span class="pill">09:57–10:05</span><span class="pill">10:20–10:35</span></div></div>
+</div></div>
+<script>
+const places=[
+{group:"ASIA / PACIFIC",name:"Sydney",tz:"Australia/Sydney",open:[10,0],close:[16,0]},
+{group:"ASIA / PACIFIC",name:"Tokyo",tz:"Asia/Tokyo",open:[9,0],close:[15,0]},
+{group:"ASIA / PACIFIC",name:"Hong Kong",tz:"Asia/Hong_Kong",open:[9,30],close:[16,0]},
+{group:"ASIA / PACIFIC",name:"Vietnam",tz:"Asia/Ho_Chi_Minh",open:[9,0],close:[15,0]},
+{group:"EUROPE",name:"Paris",tz:"Europe/Paris",open:[9,0],close:[17,30]},
+{group:"EUROPE",name:"London",tz:"Europe/London",open:[8,0],close:[16,30]},
+{group:"UNITED STATES",name:"New York",tz:"America/New_York",open:[9,30],close:[16,0]},
+{group:"UNITED STATES",name:"Chicago",tz:"America/Chicago",open:[8,30],close:[15,0]},
+{group:"UNITED STATES",name:"Houston",tz:"America/Chicago"},
+{group:"UNITED STATES",name:"Los Angeles",tz:"America/Los_Angeles"},
+{group:"UNITED STATES",name:"Seattle",tz:"America/Los_Angeles"}];
+function parts(d,tz){return Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:tz,weekday:"short",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(d).map(x=>[x.type,x.value]))}
+function off(d,tz){let p=parts(d,tz);return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second)-d.getTime()}
+function z2u(y,m,d,h,mi,tz){let g=Date.UTC(y,m-1,d,h,mi),u=g-off(new Date(g),tz);return new Date(g-off(new Date(u),tz))}
+function nextOpen(p,now){if(!p.open)return null;let q=parts(now,p.tz),y=+q.year,m=+q.month,d=+q.day;for(let a=0;a<8;a++){let b=new Date(Date.UTC(y,m-1,d+a)),yy=b.getUTCFullYear(),mm=b.getUTCMonth()+1,dd=b.getUTCDate(),noon=z2u(yy,mm,dd,12,0,p.tz),wd=new Intl.DateTimeFormat("en-US",{timeZone:p.tz,weekday:"short"}).format(noon);if(wd==="Sat"||wd==="Sun")continue;let o=z2u(yy,mm,dd,p.open[0],p.open[1],p.tz);if(o>now)return o}}
+function session(p,now){if(!p.open)return null;let q=parts(now,p.tz);if(q.weekday==="Sat"||q.weekday==="Sun")return{open:false};let o=z2u(+q.year,+q.month,+q.day,p.open[0],p.open[1],p.tz),c=z2u(+q.year,+q.month,+q.day,p.close[0],p.close[1],p.tz);return{open:now>=o&&now<c,o,c}}
+function dur(ms){let s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return `${h}h ${String(m).padStart(2,"0")}m ${String(x).padStart(2,"0")}s`}
+function clock(n,tz){return new Intl.DateTimeFormat("en-US",{timeZone:tz,hour:"numeric",minute:"2-digit",second:"2-digit",hour12:true}).format(n)}
+function setBar(id,tz,oh,om,ch,cm,now){let p=parts(now,tz),o=z2u(+p.year,+p.month,+p.day,oh,om,tz),c=z2u(+p.year,+p.month,+p.day,ch,cm,tz),st=(o.getUTCHours()+o.getUTCMinutes()/60)/24*100,w=(c-o)/86400000*100,e=document.getElementById(id);e.style.left=st+"%";e.style.width=w+"%"}
+function render(){let now=new Date();utcClock.textContent=now.toLocaleTimeString("en-GB",{timeZone:"UTC",hour12:false});localDate.textContent=now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});let html="",g="",opens=[];for(const p of places){if(p.group!==g){if(g)html+="</div>";g=p.group;html+=`<div class="section"><div class="section-title">${g}</div>`}let s=session(p,now),n=nextOpen(p,now);if(n)opens.push([n,p.name]);let st="",cl="";if(p.open){if(s&&s.open){st=`<div class="open">● OPEN</div><div class="count">Closes in ${dur(s.c-now)}</div>`;cl="active"}else st=`<div class="closed">CLOSED</div><div class="count">Opens in ${dur(n-now)}</div>`}else st=`<div class="closed">LOCAL TIME</div>`;html+=`<div class="city ${cl}"><div><div class="name">${p.name}</div><div class="time">${clock(now,p.tz)}</div></div><div class="status">${st}</div></div>`}html+="</div>";cities.innerHTML=html;opens.sort((a,b)=>a[0]-b[0]);if(opens.length){nextMarket.textContent=opens[0][1];nextCountdown.textContent=dur(opens[0][0]-now)}let uh=now.getUTCHours()+now.getUTCMinutes()/60+now.getUTCSeconds()/3600;nowLine.style.left=(uh/24*100)+"%";setBar("sydneyBar","Australia/Sydney",10,0,16,0,now);setBar("tokyoBar","Asia/Tokyo",9,0,15,0,now);setBar("hkBar","Asia/Hong_Kong",9,30,16,0,now);setBar("londonBar","Europe/London",8,0,16,30,now);setBar("nyBar","America/New_York",9,30,16,0,now)}
+render();setInterval(render,1000);
+</script>
+</body></html>
